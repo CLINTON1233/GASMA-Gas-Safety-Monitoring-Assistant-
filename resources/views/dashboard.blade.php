@@ -8,6 +8,7 @@
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -90,31 +91,111 @@
             <!-- Main Content -->
             <main class="flex-1 p-6">
                 <div class="grid grid-cols-4 gap-6">
-                    <div class="bg-white rounded-lg p-4 shadow">
-                        <h3 class="text-gray-600">Gas Berbahaya Terdeteksi</h3>
-                        <p class="text-2xl font-bold">12 ppm</p>
+                    <!-- Card 1: Bahaya Gas Terdeteksi -->
+                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-icons text-2xl text-indigo-600">gas_meter</span>
+                            <h3 class="text-gray-600 text-lg font-semibold">Bahaya Gas Terdeteksi</h3>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">12 PPM</p>
+                        <p class="text-sm text-red-500">Tingkat Bahaya: Tinggi</p> <!-- Sesuaikan dengan tingkat bahaya -->
                     </div>
-                    <div class="bg-white rounded-lg p-4 shadow">
-                        <h3 class="text-gray-600">Suhu Tertinggi</h3>
-                        <p class="text-2xl font-bold">45°C</p>
+
+                    <!-- Card 2: Suhu Tertinggi -->
+                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-icons text-2xl text-indigo-600">thermostat</span>
+                            <h3 class="text-gray-600 text-lg font-semibold">Suhu Tertinggi</h3>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">35 °C</p>
+                        <p class="text-sm text-orange-500">Suhu Melebihi Batas</p> <!-- Sesuaikan dengan status suhu -->
                     </div>
-                    <div class="bg-white rounded-lg p-4 shadow">
-                        <h3 class="text-gray-600">Cahaya Redup</h3>
-                        <p class="text-2xl font-bold">4 Kali</p>
+
+                    <!-- Card 3: Cahaya Redup -->
+                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-icons text-2xl text-indigo-600">lightbulb</span>
+                            <h3 class="text-gray-600 text-lg font-semibold">Cahaya Redup</h3>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">3 Kali</p>
+                        <p class="text-sm text-yellow-500">Cahaya Redup Terpantau</p> <!-- Sesuaikan dengan jumlah kejadian cahaya redup -->
                     </div>
-                    <div class="bg-white rounded-lg p-4 shadow">
-                        <h3 class="text-gray-600">Jumlah Insiden</h3>
-                        <p class="text-2xl font-bold">2 Kasus</p>
+
+                    <!-- Card 4: Jumlah Insiden -->
+                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="material-icons text-2xl text-indigo-600">warning</span>
+                            <h3 class="text-gray-600 text-lg font-semibold">Jumlah Insiden</h3>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-800">2 Kasus</p>
+                        <p class="text-sm text-red-500">Tingkat Keparahan: Tinggi</p> <!-- Sesuaikan dengan tingkat keparahan insiden -->
                     </div>
                 </div>
 
                 <!-- Chart Placeholder -->
-                <div class="mt-6 bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-gray-700 mb-4">Total Revenue</h3>
-                    <div class="h-64 bg-gray-100 rounded flex items-center justify-center">
-                        <p>Chart Placeholder</p>
+                <div class="container mx-auto p-3">
+                    <div class="bg-white rounded-lg shadow-md p-3 w-100"> <!-- Lebar card dikurangi dengan w-64 dan padding dikurangi -->
+                        <h2 class="text-sm font-bold mb-2">Tingkat Suhu</h2> <!-- Ukuran teks lebih kecil -->
+                        <div class="flex justify-end mb-2">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-2 rounded">Day</button>
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-2 rounded ml-2">Week</button>
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-2 rounded ml-2">Month</button>
+                        </div>
+                        <canvas id="lineChart" class="w-full h-100"></canvas> <!-- Ukuran canvas dikurangi dengan h-32 -->
                     </div>
                 </div>
+
+                <script>
+                    const lineChartCanvas = document.getElementById('lineChart');
+                    const lineChart = new Chart(lineChartCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                            datasets: [{
+                                    label: 'Total Revenue',
+                                    data: [30, 25, 35, 30, 45, 35, 60, 50, 60, 35, 40, 50],
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1,
+                                    fill: true,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7,
+                                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                                    pointBorderColor: 'rgba(54, 162, 235, 1)',
+                                },
+                                {
+                                    label: 'Total Sales',
+                                    data: [25, 20, 30, 30, 20, 30, 35, 30, 40, 30, 35, 45],
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 1,
+                                    fill: true,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7,
+                                    pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                                    pointBorderColor: 'rgba(255, 99, 132, 1)',
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 10,
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false,
+                                }
+                            }
+                        }
+                    });
+                </script>
+
+
             </main>
         </div>
     </div>

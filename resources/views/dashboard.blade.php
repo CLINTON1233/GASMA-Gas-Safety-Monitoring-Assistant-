@@ -132,63 +132,179 @@
                     </div>
                 </div>
 
-                <!-- Chart Placeholder -->
-                <div class="container mx-auto p-3">
-                    <div class="bg-white rounded-lg shadow-md p-3 w-100"> <!-- Lebar card dikurangi dengan w-64 dan padding dikurangi -->
-                        <h2 class="text-sm font-bold mb-2">Tingkat Suhu</h2> <!-- Ukuran teks lebih kecil -->
-                        <div class="flex justify-end mb-2">
-                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-2 rounded">Day</button>
-                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-2 rounded ml-2">Week</button>
-                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-2 rounded ml-2">Month</button>
+                <div class="container mx-auto p-6">
+                    <div class="flex space-x-4">
+                        <!-- Grafik 1: Line Chart -->
+                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
+                            <h2 class="text-lg font-bold text-gray-700 mb-4">Perubahan Tingkat Suhu</h2>
+                            <div class="flex justify-end mb-4">
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-3 rounded">Harian</button>
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-3 rounded ml-2">Mingguan</button>
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-3 rounded ml-2">Bulanan</button>
+                            </div>
+                            <canvas id="lineChart" class="w-full h-48"></canvas>
                         </div>
-                        <canvas id="lineChart" class="w-full h-100"></canvas> <!-- Ukuran canvas dikurangi dengan h-32 -->
+
+                        <!-- Grafik 2: Bar Chart -->
+                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
+                            <h2 class="text-lg font-bold text-gray-700 mb-4">Perbandingan Insiden Gas</h2>
+                            <canvas id="barChart" class="w-full h-48"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container mx-auto p-6">
+                    <div class="flex space-x-4">
+                        <!-- Grafik 3:  Chart -->
+                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
+                            <h2 class="text-lg font-bold text-gray-700 mb-4">Riwayat Pemantauan Gas</h2>
+                            <canvas id="chart3" class="w-full h-48"></canvas>
+                        </div>
+
+                        <!-- Grafik 4:  Chart -->
+                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
+                            <h2 class="text-lg font-bold text-gray-700 mb-4">Riwayat Insiden</h2>
+                            <canvas id="chart4" class="w-1/4 h-20"></canvas> <!-- Mengurangi ukuran grafik -->
+                        </div>
                     </div>
                 </div>
 
                 <script>
+                    // Grafik Line Chart
                     const lineChartCanvas = document.getElementById('lineChart');
                     const lineChart = new Chart(lineChartCanvas, {
                         type: 'line',
                         data: {
-                            labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                             datasets: [{
-                                    label: 'Total Revenue',
-                                    data: [30, 25, 35, 30, 45, 35, 60, 50, 60, 35, 40, 50],
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1,
-                                    fill: true,
-                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                    pointRadius: 5,
-                                    pointHoverRadius: 7,
-                                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                                    pointBorderColor: 'rgba(54, 162, 235, 1)',
-                                },
-                                {
-                                    label: 'Total Sales',
-                                    data: [25, 20, 30, 30, 20, 30, 35, 30, 40, 30, 35, 45],
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 1,
-                                    fill: true,
-                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                    pointRadius: 5,
-                                    pointHoverRadius: 7,
-                                    pointBackgroundColor: 'rgba(255, 99, 132, 1)',
-                                    pointBorderColor: 'rgba(255, 99, 132, 1)',
-                                }
-                            ]
+                                label: 'Suhu (°C)',
+                                data: [20, 22, 25, 27, 30, 28, 26, 29, 31, 33, 30, 28],
+                                borderColor: '#4F46E5',
+                                backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                                borderWidth: 2,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#4F46E5',
+                            }]
                         },
                         options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                            },
                             scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#6B7280'
+                                    },
+                                },
                                 y: {
                                     beginAtZero: true,
                                     ticks: {
-                                        stepSize: 10,
-                                    }
+                                        stepSize: 5,
+                                        color: '#6B7280'
+                                    },
                                 }
-                            },
+                            }
+                        }
+                    });
+
+                    // Grafik Bar Chart
+                    const barChartCanvas = document.getElementById('barChart');
+                    const barChart = new Chart(barChartCanvas, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Gas A', 'Gas B', 'Gas C', 'Gas D'],
+                            datasets: [{
+                                label: 'Jumlah Insiden',
+                                data: [5, 3, 8, 6],
+                                backgroundColor: ['#F87171', '#FBBF24', '#34D399', '#60A5FA'],
+                                borderWidth: 1,
+                                borderColor: '#E5E7EB',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
                             plugins: {
                                 legend: {
-                                    display: false,
+                                    display: false
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#6B7280'
+                                    },
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 2,
+                                        color: '#6B7280'
+                                    },
+                                }
+                            }
+                        }
+                    });
+
+
+                    // grafik 3
+                    const chart3Ctx = document.getElementById('chart3').getContext('2d');
+                    new Chart(chart3Ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+                            datasets: [{
+                                label: 'Tingkat Gas (PPM)',
+                                data: [12, 15, 8, 10, 18, 20, 22],
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderWidth: 2,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                },
+                            },
+                        }
+                    });
+
+                    // JavaScript for Doughnut Chart (Chart.js)
+                    const ctx4 = document.getElementById('chart4').getContext('2d');
+                    const chart4 = new Chart(ctx4, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Insiden A', 'Insiden B', 'Insiden C'],
+                            datasets: [{
+                                data: [30, 50, 20],
+                                backgroundColor: ['#2C3E50', '#95A5A6', '#7F8C8D'],
+                                hoverOffset: 4 // Optional: Adds a hover effect
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            cutoutPercentage: 70,
+                            plugins: {
+                                legend: {
+                                    position: 'top', // Optional: position of the legend
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return tooltipItem.label + ': ' + tooltipItem.raw + '%'; // Display percentage in tooltip
+                                        }
+                                    }
                                 }
                             }
                         }

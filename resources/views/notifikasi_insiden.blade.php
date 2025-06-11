@@ -35,12 +35,16 @@
                     Pemantauan Suhu
                 </a>
                 <a href="pemantauan_cahaya" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">wb_sunny</i>
-                    Pemantauan Cahaya
+                    <i class="material-icons text-lg">vibration</i>
+                    Pemantauan Getaran
                 </a>
                 <a href="notifikasi_insiden" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
                     <i class="material-icons text-lg">notification_important</i>
                     Notifikasi Insiden
+                </a>
+                <a href="lokasi" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
+                    <i class="material-icons text-lg">place</i>
+                    Lokasi
                 </a>
                 <a href="riwayat_pemantauan" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
                     <i class="material-icons text-lg">history</i>

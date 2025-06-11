@@ -35,12 +35,16 @@
                     Pemantauan Suhu
                 </a>
                 <a href="pemantauan_cahaya" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">wb_sunny</i>
-                    Pemantauan Cahaya
+                    <i class="material-icons text-lg">vibration</i>
+                    Pemantauan Getaran
                 </a>
                 <a href="notifikasi_insiden" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
                     <i class="material-icons text-lg">notification_important</i>
                     Notifikasi Insiden
+                </a>
+                <a href="lokasi" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
+                    <i class="material-icons text-lg">place</i>
+                    Lokasi
                 </a>
                 <a href="riwayat_pemantauan" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
                     <i class="material-icons text-lg">history</i>
@@ -110,12 +114,13 @@
                     <!-- Card 3: Cahaya Redup -->
                     <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="material-icons text-2xl text-indigo-600">lightbulb</span>
-                            <h3 class="text-gray-600 text-lg font-semibold">Cahaya Redup</h3>
+                            <span class="material-icons text-2xl text-indigo-600">vibration</span>
+                            <h3 class="text-gray-600 text-lg font-semibold">Getaran Terpantau</h3>
                         </div>
                         <p class="text-2xl font-bold text-gray-800">3 Kali</p>
-                        <p class="text-sm text-yellow-500">Cahaya Redup Terpantau</p> <!-- Sesuaikan dengan jumlah kejadian cahaya redup -->
+                        <p class="text-sm text-yellow-500">Getaran Terpantau</p> <!-- Sesuaikan dengan jumlah kejadian getaran -->
                     </div>
+
 
                     <!-- Card 4: Jumlah Insiden -->
                     <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">

@@ -4,60 +4,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    @vite('resources/css/app.css')
+    <title>Gas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
 
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left: 3px solid #06b6d4;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100">
-    <div class="flex flex-1">
+<body class="bg-slate-50">
+    <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <div class="w-60 bg-[#232733] text-white min-h-screen px-6 py-8">
-            <div class="flex items-center gap-2 text-2xl font-bold mb-8">
-                <i class="fas fa-hard-hat"></i>
-                GASMA
+        <div class="w-70 gradient-bg text-white shadow-xl">
+            <!-- Logo -->
+            <div class="p-6 border-b border-slate-600">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-hard-hat text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">GASMA</h1>
+                        <p class="text-xs text-slate-300">Gas Safety Monitoring Assistant</p>
+                    </div>
+                </div>
             </div>
-            <nav class="flex flex-col">
-                <a href="dashboard" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">dashboard</i>
-                    Dashboard
-                </a>
-                <a href="pemantauan_gas" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">analytics</i>
-                    Pemantauan Gas
-                </a>
-                <a href="pemantauan_suhu" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">thermostat</i>
-                    Pemantauan Suhu
-                </a>
-                <a href="pemantauan_cahaya" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">vibration</i>
-                    Pemantauan Getaran
-                </a>
-                <a href="notifikasi_insiden" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">notification_important</i>
-                    Notifikasi Insiden
-                </a>
-                <a href="lokasi" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">place</i>
-                    Lokasi
-                </a>
-                <a href="riwayat_pemantauan" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">history</i>
-                    Riwayat Pemantauan
-                </a>
-                <a href="pengguna" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">people</i>
-                    Pengguna
-                </a>
-                <a href="pengaturan_sistem" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">settings</i>
-                    Pengaturan Sistem
-                </a>
+
+            <!-- Navigation -->
+            <nav class="mt-6 px-4">
+                <div class="mb-6">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">MAIN MENU</p>
+                    <a href="/dashboard" class="sidebar-item  flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">dashboard</i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                    <a href="/pemantauan_gas" class="sidebar-item active flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">analytics</i>
+                        <span class="font-medium">Pemantauan Gas</span>
+                    </a>
+                    <a href="/pemantauan_suhu" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">thermostat</i>
+                        <span class="font-medium">Pemantauan Suhu</span>
+                    </a>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">MONITORING</p>
+                    <a href="/notifikasi_insiden" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">notification_important</i>
+                        <span class="font-medium">Notifikasi Insiden</span>
+                    </a>
+                    <a href="/pemantauan_lokasi" class="sidebar-item  flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">location_on</i>
+                        <span class="font-medium">Lokasi</span>
+                    </a>
+                    <a href="/riwayat_pemantauan" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">history</i>
+                        <span class="font-medium">Riwayat Pemantauan</span>
+                    </a>
+                    <a href="/pemantauan_cahaya" class="sidebar-item active flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">light_mode</i>
+                        <span class="font-medium">Pemantauan Cahaya</span>
+                    </a>
+                </div>
+
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">SYSTEM</p>
+                    <a href="/pengguna" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">people</i>
+                        <span class="font-medium">Pengguna</span>
+                    </a>
+                    <a href="/pengaturan_sistem" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">settings</i>
+                        <span class="font-medium">Pengaturan Sistem</span>
+                    </a>
+                </div>
             </nav>
         </div>
         <div class="flex-1 flex flex-col">

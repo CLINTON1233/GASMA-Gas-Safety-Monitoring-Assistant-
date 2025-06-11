@@ -4,349 +4,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    @vite('resources/css/app.css')
+    <title>GASMA Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
 
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left: 3px solid #06b6d4;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100">
-    <div class="flex flex-1">
+<body class="bg-slate-50">
+    <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <div class="w-60 bg-[#232733] text-white min-h-screen px-6 py-8">
-            <div class="flex items-center gap-2 text-2xl font-bold mb-8">
-                <i class="fas fa-hard-hat"></i>
-                GASMA
+        <div class="w-70 gradient-bg text-white shadow-xl">
+            <!-- Logo -->
+            <div class="p-6 border-b border-slate-600">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-hard-hat text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">GASMA</h1>
+                        <p class="text-xs text-slate-300">Gas Safety Monitoring Assistant</p>
+                    </div>
+                </div>
             </div>
-            <nav class="flex flex-col">
-                <a href="dashboard" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">dashboard</i>
-                    Dashboard
-                </a>
-                <a href="pemantauan_gas" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">analytics</i>
-                    Pemantauan Gas
-                </a>
-                <a href="pemantauan_suhu" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">thermostat</i>
-                    Pemantauan Suhu
-                </a>
-                <a href="pemantauan_cahaya" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">vibration</i>
-                    Pemantauan Getaran
-                </a>
-                <a href="notifikasi_insiden" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">notification_important</i>
-                    Notifikasi Insiden
-                </a>
-                <a href="lokasi" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">place</i>
-                    Lokasi
-                </a>
-                <a href="riwayat_pemantauan" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">history</i>
-                    Riwayat Pemantauan
-                </a>
-                <a href="pengguna" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">people</i>
-                    Pengguna
-                </a>
-                <a href="pengaturan_sistem" class="menu-item flex items-center gap-3 py-2 text-sm font-semibold hover:bg-white hover:text-black transition transform hover:scale-105 hover:shadow-md rounded-lg mb-4">
-                    <i class="material-icons text-lg">settings</i>
-                    Pengaturan Sistem
-                </a>
+
+            <!-- Navigation -->
+            <nav class="mt-6 px-4">
+                <div class="mb-6">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">MAIN MENU</p>
+                    <a href="/dashboard" class="sidebar-item active flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">dashboard</i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                    <a href="/pemantauan_gas" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">analytics</i>
+                        <span class="font-medium">Pemantauan Gas</span>
+                    </a>
+                    <a href="/pemantauan_suhu" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">thermostat</i>
+                        <span class="font-medium">Pemantauan Suhu</span>
+                    </a>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">MONITORING</p>
+                    <a href="/notifikasi_insiden" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">notification_important</i>
+                        <span class="font-medium">Notifikasi Insiden</span>
+                    </a>
+                    <a href="/pemantauan_lokasi" class="sidebar-item  flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">location_on</i>
+                        <span class="font-medium">Lokasi</span>
+                    </a>
+                    <a href="/riwayat_pemantauan" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">history</i>
+                        <span class="font-medium">Riwayat Pemantauan</span>
+                    </a>
+                    <a href="/pemantauan_cahaya" class="sidebar-item active flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">light_mode</i>
+                        <span class="font-medium">Pemantauan Cahaya</span>
+                    </a>
+                </div>
+
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">SYSTEM</p>
+                    <a href="/pengguna" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">people</i>
+                        <span class="font-medium">Pengguna</span>
+                    </a>
+                    <a href="/pengaturan_sistem" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                        <i class="material-icons text-lg">settings</i>
+                        <span class="font-medium">Pengaturan Sistem</span>
+                    </a>
+                </div>
             </nav>
         </div>
-        <!-- Main Content Area with Header -->
+
+        <!-- Main Content -->
         <div class="flex-1 flex flex-col">
             <!-- Header -->
-            <header class="bg-white shadow-md py-4 px-6 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <span class="material-icons text-gray-500">search</span>
-                    <input type="text" placeholder="Type to search..." class="bg-gray-100 px-4 py-2 rounded-md w-64 text-sm focus:outline-none focus:ring focus:ring-blue-300">
-                </div>
-                <div class="flex items-center gap-6">
-                    <button class="bg-gray-100 p-2 rounded-full relative">
-                        <span class="material-icons text-gray-500">notifications</span>
-                        <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">2</span>
-                    </button>
-                    <button class="bg-gray-100 p-2 rounded-full">
-                        <span class="material-icons text-gray-500">chat</span>
-                    </button>
-                    <div class="flex items-center gap-3">
-                        <img src="https://via.placeholder.com/40" alt="User Photo" class="w-10 h-10 rounded-full">
-                        <div>
-                            <h4 class="text-gray-800 text-sm font-semibold">Clinton Alfaro</h4>
-                            <p class="text-gray-500 text-xs">Admin</p>
+            <header class="bg-white shadow-sm border-b border-slate-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-lg font-semibold text-slate-900">Selamat Datang, Admin</h1>
+                        <p class="text-slate-600 text-sm">Pantau Keamanan Gas Anda dan Laporkan Keadaan yang serius</p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <!-- Search -->
+                        <div class="relative">
+                            <i class="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400">search</i>
+                            <input type="text" placeholder="Search for..."
+                                class="pl-10 pr-4 py-2 w-80 bg-slate-100 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
                         </div>
-                        <button>
-                            <span class="material-icons text-gray-500">expand_more</span>
+
+                        <!-- Notifications -->
+                        <button class="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                            <i class="material-icons">notifications</i>
+                            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
                         </button>
+
+                        <!-- User Profile -->
+                        <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                            <img src="https://via.placeholder.com/40" alt="User" class="w-10 h-10 rounded-full">
+                            <div>
+                                <p class="font-semibold text-slate-900 text-sm">Clinton Alfaro</p>
+                                <p class="text-slate-500 text-xs">Admin</p>
+                            </div>
+                            <i class="material-icons text-slate-400">expand_more</i>
+                        </div>
                     </div>
                 </div>
             </header>
-            <!-- Main Content -->
-            <main class="flex-1 p-6">
-                <div class="grid grid-cols-4 gap-6">
-                    <!-- Card 1: Bahaya Gas Terdeteksi -->
-                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="material-icons text-2xl text-indigo-600">gas_meter</span>
-                            <h3 class="text-gray-600 text-lg font-semibold">Bahaya Gas Terdeteksi</h3>
-                        </div>
-                        <p class="text-2xl font-bold text-gray-800">12 PPM</p>
-                        <p class="text-sm text-red-500">Tingkat Bahaya: Tinggi</p> <!-- Sesuaikan dengan tingkat bahaya -->
-                    </div>
 
-                    <!-- Card 2: Suhu Tertinggi -->
-                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="material-icons text-2xl text-indigo-600">thermostat</span>
-                            <h3 class="text-gray-600 text-lg font-semibold">Suhu Tertinggi</h3>
-                        </div>
-                        <p class="text-2xl font-bold text-gray-800">35 °C</p>
-                        <p class="text-sm text-orange-500">Suhu Melebihi Batas</p> <!-- Sesuaikan dengan status suhu -->
-                    </div>
-
-                    <!-- Card 3: Cahaya Redup -->
-                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="material-icons text-2xl text-indigo-600">vibration</span>
-                            <h3 class="text-gray-600 text-lg font-semibold">Getaran Terpantau</h3>
-                        </div>
-                        <p class="text-2xl font-bold text-gray-800">3 Kali</p>
-                        <p class="text-sm text-yellow-500">Getaran Terpantau</p> <!-- Sesuaikan dengan jumlah kejadian getaran -->
-                    </div>
-
-
-                    <!-- Card 4: Jumlah Insiden -->
-                    <div class="bg-white rounded-lg p-6 shadow-lg flex flex-col items-center justify-between">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="material-icons text-2xl text-indigo-600">warning</span>
-                            <h3 class="text-gray-600 text-lg font-semibold">Jumlah Insiden</h3>
-                        </div>
-                        <p class="text-2xl font-bold text-gray-800">2 Kasus</p>
-                        <p class="text-sm text-red-500">Tingkat Keparahan: Tinggi</p> <!-- Sesuaikan dengan tingkat keparahan insiden -->
-                    </div>
-                </div>
-
-                <div class="container mx-auto p-6">
-                    <div class="flex space-x-4">
-                        <!-- Grafik 1: Line Chart -->
-                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
-                            <h2 class="text-lg font-bold text-gray-700 mb-4">Perubahan Tingkat Suhu</h2>
-                            <div class="flex justify-end mb-4">
-                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-3 rounded">Harian</button>
-                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-3 rounded ml-2">Mingguan</button>
-                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-1 px-3 rounded ml-2">Bulanan</button>
+            <!-- Main Dashboard Content -->
+            <main class="flex-1 p-6 bg-slate-50">
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Gas Detection Card -->
+                    <div class="metric-card card-hover rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="material-icons text-red-600 text-xl">gas_meter</i>
                             </div>
-                            <canvas id="lineChart" class="w-full h-48"></canvas>
+                            <span class="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded-full">TINGGI</span>
                         </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-1">12 PPM</h3>
+                        <p class="text-slate-600 text-sm mb-2">Bahaya Gas Terdeteksi</p>
+                        <div class="flex items-center gap-2">
+                            <span class="text-red-500 text-xs">↑ Tingkat Bahaya: Tinggi</span>
+                        </div>
+                    </div>
 
-                        <!-- Grafik 2: Bar Chart -->
-                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
-                            <h2 class="text-lg font-bold text-gray-700 mb-4">Perbandingan Insiden Gas</h2>
-                            <canvas id="barChart" class="w-full h-48"></canvas>
+                    <!-- Temperature Card -->
+                    <div class="metric-card card-hover rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class="material-icons text-orange-600 text-xl">thermostat</i>
+                            </div>
+                            <span class="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">TINGGI</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-1">35°C</h3>
+                        <p class="text-slate-600 text-sm mb-2">Suhu Tertinggi</p>
+                        <div class="flex items-center gap-2">
+                            <span class="text-orange-500 text-xs">↑ Suhu Melebihi Batas</span>
+                        </div>
+                    </div>
+
+                    <!-- Vibration Card -->
+                    <div class="metric-card card-hover rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="material-icons text-yellow-600 text-xl">vibration</i>
+                            </div>
+                            <span class="text-xs font-semibold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">AKTIF</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-1">3</h3>
+                        <p class="text-slate-600 text-sm mb-2">Getaran Terpantau</p>
+                        <div class="flex items-center gap-2">
+                            <span class="text-yellow-500 text-xs">→ 3 Kali Getaran</span>
+                        </div>
+                    </div>
+
+                    <!-- Incidents Card -->
+                    <div class="metric-card card-hover rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                <i class="material-icons text-cyan-600 text-xl">warning</i>
+                            </div>
+                            <span class="text-xs font-semibold text-cyan-600 bg-cyan-100 px-2 py-1 rounded-full">ALERT</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-1">2</h3>
+                        <p class="text-slate-600 text-sm mb-2">Jumlah Insiden</p>
+                        <div class="flex items-center gap-2">
+                            <span class="text-cyan-500 text-xs">↑ Tingkat Keparahan: Tinggi</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="container mx-auto p-6">
-                    <div class="flex space-x-4">
-                        <!-- Grafik 3:  Chart -->
-                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
-                            <h2 class="text-lg font-bold text-gray-700 mb-4">Riwayat Pemantauan Gas</h2>
-                            <canvas id="chart3" class="w-full h-48"></canvas>
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Temperature Chart -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Perubahan Tingkat Suhu</h3>
+                                <p class="text-slate-600 text-sm">Total temperature changes</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded hover:bg-slate-200">Harian</button>
+                                <button class="px-3 py-1 text-xs font-medium bg-cyan-500 text-white rounded">Mingguan</button>
+                                <button class="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded hover:bg-slate-200">Bulanan</button>
+                            </div>
                         </div>
+                        <div style="height: 300px;">
+                            <canvas id="tempChart"></canvas>
+                        </div>
+                    </div>
 
-                        <!-- Grafik 4:  Chart -->
-                        <div class="bg-white rounded-lg shadow-md p-6 w-1/2">
-                            <h2 class="text-lg font-bold text-gray-700 mb-4">Riwayat Insiden</h2>
-                            <canvas id="chart4" class="w-1/4 h-20"></canvas> <!-- Mengurangi ukuran grafik -->
+                    <!-- Gas Incidents Chart -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Perbandingan Insiden Gas</h3>
+                                <p class="text-slate-600 text-sm">Last 12 months</p>
+                            </div>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="incidentChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <script>
-                    // Grafik Line Chart
-                    const lineChartCanvas = document.getElementById('lineChart');
-                    const lineChart = new Chart(lineChartCanvas, {
-                        type: 'line',
-                        data: {
-                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                            datasets: [{
-                                label: 'Suhu (°C)',
-                                data: [20, 22, 25, 27, 30, 28, 26, 29, 31, 33, 30, 28],
-                                borderColor: '#4F46E5',
-                                backgroundColor: 'rgba(79, 70, 229, 0.2)',
-                                borderWidth: 2,
-                                pointRadius: 4,
-                                pointBackgroundColor: '#4F46E5',
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        color: '#6B7280'
-                                    },
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        stepSize: 5,
-                                        color: '#6B7280'
-                                    },
-                                }
-                            }
-                        }
-                    });
+                <!-- Bottom Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Gas Monitoring History -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Riwayat Pemantauan Gas</h3>
+                                <p class="text-slate-600 text-sm">Weekly gas level monitoring</p>
+                            </div>
+                        </div>
+                        <div style="height: 250px;">
+                            <canvas id="gasHistoryChart"></canvas>
+                        </div>
+                    </div>
 
-                    // Grafik Bar Chart
-                    const barChartCanvas = document.getElementById('barChart');
-                    const barChart = new Chart(barChartCanvas, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Helm A', 'Helm B', 'Helm C', 'Helm D', 'Helm E'],
-                            datasets: [{
-                                label: 'Jumlah Insiden',
-                                data: [5, 3, 8, 6, 9],
-                                backgroundColor: function(context) {
-                                    const chart = context.chart;
-                                    const ctx = chart.ctx;
-                                    const gradient = ctx.createLinearGradient(0, 0, 0, 400); // Membuat gradasi dari atas ke bawah
-                                    gradient.addColorStop(0, '#1E3A8A'); // Biru tua
-                                    gradient.addColorStop(1, '#3B82F6'); // Biru muda
-                                    return gradient;
-                                },
-                                borderWidth: 1,
-                                borderColor: '#E5E7EB',
-                                barThickness: 30, // Menentukan lebar batang
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                },
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        color: '#6B7280'
-                                    },
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        stepSize: 1,
-                                        color: '#6B7280'
-                                    },
-                                }
-                            }
-                        }
-                    });
-
-
-                    // grafik 3
-                    const chart3Ctx = document.getElementById('chart3').getContext('2d');
-                    new Chart(chart3Ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-                            datasets: [{
-                                label: 'Tingkat Gas (PPM)',
-                                data: [12, 15, 8, 10, 18, 20, 22],
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                                borderWidth: 2,
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top',
-                                },
-                            },
-                        }
-                    });
-
-                    // JavaScript for Doughnut Chart (Chart.js)
-                    const ctx4 = document.getElementById('chart4').getContext('2d');
-                    const chart4 = new Chart(ctx4, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['Insiden A', 'Insiden B', 'Insiden C'],
-                            datasets: [{
-                                data: [30, 50, 20],
-                                backgroundColor: ['#2C3E50', '#95A5A6', '#7F8C8D'],
-                                hoverOffset: 4 // Optional: Adds a hover effect
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            cutoutPercentage: 70,
-                            plugins: {
-                                legend: {
-                                    position: 'top', // Optional: position of the legend
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            return tooltipItem.label + ': ' + tooltipItem.raw + '%'; // Display percentage in tooltip
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                </script>
-
-
+                    <!-- Incident Distribution -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">Riwayat Insiden</h3>
+                                <p class="text-slate-600 text-sm">Incident distribution</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-center" style="height: 200px;">
+                            <canvas id="incidentPieChart"></canvas>
+                        </div>
+                        <div class="mt-6 space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-slate-700 rounded-full"></div>
+                                <span class="text-sm text-slate-600">Insiden A</span>
+                                <span class="text-sm font-semibold text-slate-900 ml-auto">30%</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-slate-400 rounded-full"></div>
+                                <span class="text-sm text-slate-600">Insiden B</span>
+                                <span class="text-sm font-semibold text-slate-900 ml-auto">50%</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 bg-slate-500 rounded-full"></div>
+                                <span class="text-sm text-slate-600">Insiden C</span>
+                                <span class="text-sm font-semibold text-slate-900 ml-auto">20%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
-    <!-- Footer -->
-    <footer class="bg-[#232733] text-white text-center py-4 w-full">
-        <p class="text-sm">&copy; 2024 GASMA. All rights reserved.</p>
-    </footer>
-
 
     <script>
-        // JavaScript to handle the active state of the sidebar menu
-        const menuItems = document.querySelectorAll('.menu-item');
+        // Temperature Line Chart
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Suhu (°C)',
+                    data: [20, 22, 25, 27, 30, 28, 26, 29, 31, 33, 30, 28],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#06b6d4',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverRadius: 8
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
 
-        menuItems.forEach(item => {
-            item.addEventListener('click', function(event) {
-                // Remove active class from all items
-                menuItems.forEach(i => i.classList.remove('bg-white', 'text-black'));
+        // Incident Bar Chart
+        const incidentCtx = document.getElementById('incidentChart').getContext('2d');
+        new Chart(incidentCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Helm A', 'Helm B', 'Helm C', 'Helm D', 'Helm E'],
+                datasets: [{
+                    label: 'Jumlah Insiden',
+                    data: [5, 3, 8, 6, 9],
+                    backgroundColor: [
+                        '#1e293b',
+                        '#334155',
+                        '#475569',
+                        '#64748b',
+                        '#94a3b8'
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            stepSize: 1
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
 
-                // Add active class to clicked item
-                this.classList.add('bg-white', 'text-black');
+        // Gas History Chart
+        const gasHistoryCtx = document.getElementById('gasHistoryChart').getContext('2d');
+        new Chart(gasHistoryCtx, {
+            type: 'line',
+            data: {
+                labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+                datasets: [{
+                    label: 'Tingkat Gas (PPM)',
+                    data: [12, 15, 8, 10, 18, 20, 22],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#06b6d4',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            stepSize: 2
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverRadius: 8
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+
+        // Incident Pie Chart
+        const pieCtx = document.getElementById('incidentPieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Insiden A', 'Insiden B', 'Insiden C'],
+                datasets: [{
+                    data: [30, 50, 20],
+                    backgroundColor: ['#2C3E50', '#95A5A6', '#7F8C8D'],
+                    borderWidth: 0,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Enhanced Sidebar Navigation with Active State Management
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const currentPath = window.location.pathname;
+
+            // Set active state based on current URL
+            sidebarItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href && href !== '#' && currentPath.includes(href.replace('/', ''))) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
             });
 
-            // Ensure that active class remains on page load
-            if (item.classList.contains('active')) {
-                item.classList.add('bg-white', 'text-black');
-            }
+            // Handle click events
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Don't prevent default for links with valid href
+                    const href = this.getAttribute('href');
+                    if (!href || href === '#' || this.classList.contains('cursor-not-allowed')) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Update active state
+                    sidebarItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Navigate to the page
+                    window.location.href = href;
+                });
+            });
+        });
+
+        // Quick access functions for cards
+        function navigateToGasMonitoring() {
+            window.location.href = '/pemantauan_gas';
+        }
+
+        function navigateToTemperatureMonitoring() {
+            window.location.href = '/pemantauan_suhu';
+        }
+
+        function navigateToIncidentNotifications() {
+            window.location.href = '/notifikasi_insiden';
+        }
+
+        function navigateToHistory() {
+            window.location.href = '/riwayat_pemantauan';
+        }
+
+        // Add click handlers to metric cards for quick navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.metric-card');
+            cards.forEach((card, index) => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function() {
+                    switch (index) {
+                        case 0: // Gas Detection Card
+                            navigateToGasMonitoring();
+                            break;
+                        case 1: // Temperature Card
+                            navigateToTemperatureMonitoring();
+                            break;
+                        case 2: // Vibration Card (not implemented yet)
+                            // Could add notification or modal
+                            break;
+                        case 3: // Incidents Card
+                            navigateToIncidentNotifications();
+                            break;
+                    }
+                });
+            });
         });
     </script>
 </body>

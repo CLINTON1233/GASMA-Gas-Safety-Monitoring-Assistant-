@@ -91,11 +91,11 @@
                         <i class="material-icons text-lg">notification_important</i>
                         <span class="font-medium">Notifikasi Insiden</span>
                     </a>
-                    <a href="/pemantauan_lokasi" class="sidebar-item  flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                    <a href="/pemantauan_lokasi" class="sidebar-item  active flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
                         <i class="material-icons text-lg">location_on</i>
                         <span class="font-medium">Lokasi</span>
                     </a>
-                    <a href="/riwayat_pemantauan" class="sidebar-item active flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
+                    <a href="/riwayat_pemantauan" class="sidebar-item flex items-center gap-3 py-3 px-4 rounded-lg mb-2">
                         <i class="material-icons text-lg">history</i>
                         <span class="font-medium">Riwayat Pemantauan</span>
                     </a>

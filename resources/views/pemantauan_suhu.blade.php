@@ -94,7 +94,7 @@
             <main class="flex-1 p-6">
                 <div class="mb-6">
                     <h1 class="text-3xl font-bold text-gray-800 mb-2">Pemantauan Suhu</h1>
-                    <p class="text-gray-600">Monitoring suhu dan kelembaban real-time dari sensor DHT22</p>
+                    <p class="text-gray-600">Monitoring suhu dan kelembaban real-time dari sensor DHT22 dengan indikator warna dinamis</p>
                 </div>
 
                 <!-- Connection Status -->
@@ -102,6 +102,25 @@
                     <div id="connectionStatus" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
                         <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
                         Disconnected
+                    </div>
+                </div>
+
+                <!-- Color Legend -->
+                <div class="mb-6 bg-white rounded-lg shadow-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Indikator Warna Status</h3>
+                    <div class="flex flex-wrap gap-6">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-gray-600">Normal (15-40°C, 30-80% RH)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-yellow-500 rounded-full"></div>
+                            <span class="text-sm text-gray-600">Butuh Penyesuaian (10-15°C atau 25-30% RH)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-red-500 rounded-full"></div>
+                            <span class="text-sm text-gray-600">Tidak Normal (<10°C atau>40°C, <25% atau>80% RH)</span>
+                        </div>
                     </div>
                 </div>
 
@@ -150,18 +169,45 @@
                     </div>
                 </div>
 
-                <!-- Chart Section -->
-                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Grafik Real-time</h3>
-                        <div class="flex gap-2">
-                            <button id="clearChart" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                                Clear Data
+                <!-- Chart Section - Separate Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Temperature Chart -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800">Grafik Suhu Real-time</h3>
+                            <button id="clearTempChart" class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm">
+                                Clear
                             </button>
                         </div>
+                        <div style="height: 300px;">
+                            <canvas id="temperatureChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Humidity Chart -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800">Grafik Kelembaban Real-time</h3>
+                            <button id="clearHumidityChart" class="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+                                Clear
+                            </button>
+                        </div>
+                        <div style="height: 300px;">
+                            <canvas id="humidityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Combined Chart Section -->
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Grafik Gabungan Suhu dan Kelembaban Real-Time</h3>
+                        <button id="clearCombinedChart" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                            Clear Data
+                        </button>
                     </div>
                     <div style="height: 400px;">
-                        <canvas id="temperatureChart"></canvas>
+                        <canvas id="combinedChart"></canvas>
                     </div>
                 </div>
 
@@ -194,39 +240,272 @@
 
     <script>
         // MQTT Configuration
-        const MQTT_HOST = '10.170.14.180'; // Sesuaikan dengan IP broker Anda
-        const MQTT_PORT = 9001; // Port untuk WebSocket (perlu dikonfigurasi di Mosca)
+        const MQTT_HOST = '192.168.15.189';
+        const MQTT_PORT = 9001;
         const MQTT_TOPIC = 'building/temperature';
 
         // Variables
         let client;
         let temperatureChart;
+        let humidityChart;
+        let combinedChart;
         let temperatureData = [];
         let humidityData = [];
+        let combinedTempData = [];
+        let combinedHumidityData = [];
         let timeLabels = [];
+        let combinedTimeLabels = [];
+        let temperatureColors = [];
+        let humidityColors = [];
+        let combinedTempColors = [];
+        let combinedHumidityColors = [];
         const maxDataPoints = 20;
 
-        // Initialize Chart
-        function initializeChart() {
-            const ctx = document.getElementById('temperatureChart').getContext('2d');
-            temperatureChart = new Chart(ctx, {
+        // Status determination functions
+        function getTemperatureStatus(temp) {
+            if (temp >= 15 && temp <= 40) return 'normal';
+            if ((temp >= 10 && temp < 15) || (temp > 40 && temp <= 45)) return 'warning';
+            return 'danger';
+        }
+
+        function getHumidityStatus(humidity) {
+            if (humidity >= 30 && humidity <= 80) return 'normal';
+            if ((humidity >= 25 && humidity < 30) || (humidity > 80 && humidity <= 85)) return 'warning';
+            return 'danger';
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'normal':
+                    return {
+                        border: 'rgb(34, 197, 94)',
+                            background: 'rgba(34, 197, 94, 0.1)'
+                    };
+                case 'warning':
+                    return {
+                        border: 'rgb(234, 179, 8)',
+                            background: 'rgba(234, 179, 8, 0.1)'
+                    };
+                case 'danger':
+                    return {
+                        border: 'rgb(239, 68, 68)',
+                            background: 'rgba(239, 68, 68, 0.1)'
+                    };
+                default:
+                    return {
+                        border: 'rgb(107, 114, 128)',
+                            background: 'rgba(107, 114, 128, 0.1)'
+                    };
+            }
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Temperature Chart
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+            temperatureChart = new Chart(tempCtx, {
                 type: 'line',
                 data: {
                     labels: timeLabels,
                     datasets: [{
                         label: 'Suhu (°C)',
                         data: temperatureData,
-                        borderColor: 'rgb(239, 68, 68)',
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && temperatureColors[index]) {
+                                return temperatureColors[index].border;
+                            }
+                            return 'rgb(239, 68, 68)';
+                        },
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && temperatureColors[index]) {
+                                return temperatureColors[index].background;
+                            }
+                            return 'rgba(107, 114, 128, 0.1)';
+                        },
+                        segment: {
+                            borderColor: function(ctx) {
+                                const index = ctx.p0DataIndex;
+                                if (temperatureColors[index]) {
+                                    return temperatureColors[index].border;
+                                }
+                                return 'rgb(107, 114, 128)';
+                            }
+                        },
                         tension: 0.4,
-                        yAxisID: 'y'
-                    }, {
+                        fill: true,
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && temperatureColors[index]) {
+                                return temperatureColors[index].border;
+                            }
+                            return 'rgb(107, 114, 128)';
+                        }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Suhu (°C)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+
+            // Humidity Chart
+            const humCtx = document.getElementById('humidityChart').getContext('2d');
+            humidityChart = new Chart(humCtx, {
+                type: 'line',
+                data: {
+                    labels: timeLabels,
+                    datasets: [{
                         label: 'Kelembaban (%)',
                         data: humidityData,
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && humidityColors[index]) {
+                                return humidityColors[index].border;
+                            }
+                            return 'rgb(30,144,255)';
+                        },
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && humidityColors[index]) {
+                                return humidityColors[index].background;
+                            }
+                            return 'rgba(107, 114, 128, 0.1)';
+                        },
+                        segment: {
+                            borderColor: function(ctx) {
+                                const index = ctx.p0DataIndex;
+                                if (humidityColors[index]) {
+                                    return humidityColors[index].border;
+                                }
+                                return 'rgb(107, 114, 128)';
+                            }
+                        },
                         tension: 0.4,
-                        yAxisID: 'y1'
+                        fill: true,
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && humidityColors[index]) {
+                                return humidityColors[index].border;
+                            }
+                            return 'rgb(107, 114, 128)';
+                        }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Kelembaban (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+
+            // Combined Chart
+            const combinedCtx = document.getElementById('combinedChart').getContext('2d');
+            combinedChart = new Chart(combinedCtx, {
+                type: 'line',
+                data: {
+                    labels: combinedTimeLabels,
+                    datasets: [{
+                        label: 'Suhu (°C)',
+                        data: combinedTempData,
+                        borderColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && combinedTempColors[index]) {
+                                return combinedTempColors[index].border;
+                            }
+                            return 'rgb(239, 68, 68)';
+                        },
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && combinedTempColors[index]) {
+                                return combinedTempColors[index].background;
+                            }
+                            return 'rgba(107, 114, 128, 0.1)';
+                        },
+                        segment: {
+                            borderColor: function(ctx) {
+                                const index = ctx.p0DataIndex;
+                                if (combinedTempColors[index]) {
+                                    return combinedTempColors[index].border;
+                                }
+                                return 'rgb(107, 114, 128)';
+                            }
+                        },
+                        tension: 0.4,
+                        yAxisID: 'y',
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && combinedTempColors[index]) {
+                                return combinedTempColors[index].border;
+                            }
+                            return 'rgb(107, 114, 128)';
+                        }
+                    }, {
+                        label: 'Kelembaban (%)',
+                        data: combinedHumidityData,
+                        borderColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && combinedHumidityColors[index]) {
+                                return combinedHumidityColors[index].border;
+                            }
+                            return 'rgb(30,144,255)';
+                        },
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && combinedHumidityColors[index]) {
+                                return combinedHumidityColors[index].background;
+                            }
+                            return 'rgba(107, 114, 128, 0.1)';
+                        },
+                        segment: {
+                            borderColor: function(ctx) {
+                                const index = ctx.p0DataIndex;
+                                if (combinedHumidityColors[index]) {
+                                    return combinedHumidityColors[index].border;
+                                }
+                                return 'rgb(107, 114, 128)';
+                            }
+                        },
+                        tension: 0.4,
+                        yAxisID: 'y1',
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index !== undefined && combinedHumidityColors[index]) {
+                                return combinedHumidityColors[index].border;
+                            }
+                            return 'rgb(107, 114, 128)';
+                        }
                     }]
                 },
                 options: {
@@ -304,17 +583,19 @@
 
             // Update temperature
             document.getElementById('temperatureValue').textContent = `${data.suhu.toFixed(1)}°C`;
-            let tempStatus = 'Normal';
-            if (data.suhu > 40) tempStatus = 'Panas';
-            else if (data.suhu < 15) tempStatus = 'Dingin';
-            document.getElementById('temperatureStatus').textContent = `Status: ${tempStatus}`;
+            const tempStatus = getTemperatureStatus(data.suhu);
+            let tempStatusText = 'Normal';
+            if (tempStatus === 'warning') tempStatusText = 'Butuh Penyesuaian';
+            else if (tempStatus === 'danger') tempStatusText = 'Tidak Normal';
+            document.getElementById('temperatureStatus').textContent = `Status: ${tempStatusText}`;
 
             // Update humidity
             document.getElementById('humidityValue').textContent = `${data.kelembaban.toFixed(1)}%`;
-            let humidityStatus = 'Normal';
-            if (data.kelembaban > 80) humidityStatus = 'Tinggi';
-            else if (data.kelembaban < 30) humidityStatus = 'Rendah';
-            document.getElementById('humidityStatus').textContent = `Status: ${humidityStatus}`;
+            const humidityStatus = getHumidityStatus(data.kelembaban);
+            let humidityStatusText = 'Normal';
+            if (humidityStatus === 'warning') humidityStatusText = 'Butuh Penyesuaian';
+            else if (humidityStatus === 'danger') humidityStatusText = 'Tidak Normal';
+            document.getElementById('humidityStatus').textContent = `Status: ${humidityStatusText}`;
 
             // Update last update time
             document.getElementById('lastUpdate').textContent = timeString;
@@ -322,45 +603,86 @@
             // Update LED status
             updateLEDStatus(data.suhu);
 
-            // Add data to chart
-            addDataToChart(data.suhu, data.kelembaban, timeString);
+            // Add data to charts with colors
+            addDataToCharts(data.suhu, data.kelembaban, timeString);
         }
 
-        // Add Data to Chart
-        function addDataToChart(temperature, humidity, time) {
+        // Add Data to Charts
+        function addDataToCharts(temperature, humidity, time) {
+            // Determine colors based on status
+            const tempStatus = getTemperatureStatus(temperature);
+            const humidityStatus = getHumidityStatus(humidity);
+            const tempColor = getStatusColor(tempStatus);
+            const humidityColor = getStatusColor(humidityStatus);
+
+            // Individual charts data
             temperatureData.push(temperature);
             humidityData.push(humidity);
             timeLabels.push(time);
+            temperatureColors.push(tempColor);
+            humidityColors.push(humidityColor);
+
+            // Combined chart data
+            combinedTempData.push(temperature);
+            combinedHumidityData.push(humidity);
+            combinedTimeLabels.push(time);
+            combinedTempColors.push(tempColor);
+            combinedHumidityColors.push(humidityColor);
 
             // Keep only last maxDataPoints
             if (temperatureData.length > maxDataPoints) {
                 temperatureData.shift();
                 humidityData.shift();
                 timeLabels.shift();
+                temperatureColors.shift();
+                humidityColors.shift();
             }
 
+            if (combinedTempData.length > maxDataPoints) {
+                combinedTempData.shift();
+                combinedHumidityData.shift();
+                combinedTimeLabels.shift();
+                combinedTempColors.shift();
+                combinedHumidityColors.shift();
+            }
+
+            // Update all charts
+            temperatureChart.update();
+            humidityChart.update();
+            combinedChart.update();
+        }
+
+        // Clear Chart Data Functions
+        function clearTemperatureChart() {
+            temperatureData.length = 0;
+            timeLabels.length = 0;
+            temperatureColors.length = 0;
             temperatureChart.update();
         }
 
-        // Clear Chart Data
-        function clearChartData() {
-            temperatureData.length = 0;
+        function clearHumidityChart() {
             humidityData.length = 0;
-            timeLabels.length = 0;
-            temperatureChart.update();
+            humidityColors.length = 0;
+            humidityChart.update();
+        }
+
+        function clearCombinedChart() {
+            combinedTempData.length = 0;
+            combinedHumidityData.length = 0;
+            combinedTimeLabels.length = 0;
+            combinedTempColors.length = 0;
+            combinedHumidityColors.length = 0;
+            combinedChart.update();
         }
 
         // Initialize MQTT Connection
         function connectMQTT() {
-            // Note: Untuk WebSocket, broker Mosca perlu dikonfigurasi dengan WebSocket support
-            // Anda perlu menambahkan konfigurasi WebSocket di broker.js
             client = new Paho.MQTT.Client(MQTT_HOST, MQTT_PORT, "web_client_" + Math.random().toString(16).substr(2, 8));
 
             client.onConnectionLost = function(responseObject) {
                 if (responseObject.errorCode !== 0) {
                     console.log("Connection lost: " + responseObject.errorMessage);
                     updateConnectionStatus(false);
-                    // Try to reconnect after 5 seconds
                     setTimeout(connectMQTT, 5000);
                 }
             };
@@ -385,7 +707,6 @@
                 onFailure: function(error) {
                     console.log("Connection failed: " + error.errorMessage);
                     updateConnectionStatus(false);
-                    // Try to reconnect after 5 seconds
                     setTimeout(connectMQTT, 5000);
                 }
             };
@@ -395,7 +716,6 @@
             } catch (error) {
                 console.error("MQTT connection error:", error);
                 updateConnectionStatus(false);
-                // Fallback: simulate data for demo purposes
                 simulateData();
             }
         }
@@ -405,12 +725,17 @@
             console.log("Simulating data...");
             setInterval(() => {
                 const simulatedData = {
-                    suhu: 20 + Math.random() * 30, // 20-50°C
-                    kelembaban: 40 + Math.random() * 40 // 40-80%
+                    suhu: 5 + Math.random() * 50, // Range 5-55°C untuk menguji semua kondisi
+                    kelembaban: 15 + Math.random() * 75 // Range 15-90% untuk menguji semua kondisi
                 };
                 updateDataDisplay(simulatedData);
-            }, 3000);
+            }, 3000); // Every 3 seconds
         }
+
+        // Event Listeners
+        document.getElementById('clearTempChart').addEventListener('click', clearTemperatureChart);
+        document.getElementById('clearHumidityChart').addEventListener('click', clearHumidityChart);
+        document.getElementById('clearCombinedChart').addEventListener('click', clearCombinedChart);
 
         // Sidebar menu functionality
         const menuItems = document.querySelectorAll('.menu-item');
@@ -421,12 +746,9 @@
             });
         });
 
-        // Clear chart button
-        document.getElementById('clearChart').addEventListener('click', clearChartData);
-
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            initializeChart();
+            initializeCharts();
             connectMQTT();
         });
     </script>
